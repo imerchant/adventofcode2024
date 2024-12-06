@@ -4,9 +4,12 @@ public class WordSearch
 {
     public const string Xmas = "XMAS";
     public const string Samx = "SAMX";
+    public const string Mas = "MAS";
+    public const string Sam = "SAM";
 
     public List<string> Content { get; }
     public int XmasCount { get; }
+    public int CrossMasCount { get; }
 
     public WordSearch(string input)
     {
@@ -16,16 +19,31 @@ public class WordSearch
         {
             for (var col = 0; col < Content[0].Length; ++col)
             {
-                if (Content[row][col] is not 'X') continue;
-
-                var maybes = GetMaybes(row, col);
-
-                XmasCount += maybes.Count(x => x is Xmas or Samx);
+                if (Content[row][col] is 'X')
+                {
+                    var maybes = GetXmasMaybes(row, col);
+                    XmasCount += maybes.Count(x => x is Xmas or Samx);
+                }
+                else if (Content[row][col] is 'A' && row > 0 && col > 0 && row < Content.Count - 1 && col < Content[0].Length - 1)
+                {
+                    var (down, up) = GetCrossMasMaybes(row, col);
+                    if ((down is Sam or Mas) && (up is Mas or Sam))
+                    {
+                        CrossMasCount++;
+                    }
+                }
             }
         }
     }
 
-    private IEnumerable<string> GetMaybes(int row, int col)
+    private (string Down, string Up) GetCrossMasMaybes(int row, int col)
+    {
+        var down = new string([Content[row - 1][col - 1], Content[row][col], Content[row + 1][col + 1]]);
+        var up = new string([Content[row + 1][col - 1], Content[row][col], Content[row - 1][col + 1]]);
+        return (down, up);
+    }
+
+    private IEnumerable<string> GetXmasMaybes(int row, int col)
     {
         // left
         if (col - 3 >= 0)
