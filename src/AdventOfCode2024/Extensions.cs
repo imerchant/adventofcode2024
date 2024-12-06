@@ -43,7 +43,7 @@ internal static class Extensions
         if (removeEmptyEntries) options |= StringSplitOptions.RemoveEmptyEntries;
         if (trimEntries) options |= StringSplitOptions.TrimEntries;
 
-        return source.Split(new[] { Environment.NewLine }, options);
+        return source.Split([Environment.NewLine], options);
     }
 
     /// <summary>
@@ -91,7 +91,7 @@ internal static class Extensions
     /// <returns>A string containing the chars of the enumerable in order, or the empty string if the enumerable is null or empty.</returns>
     public static string AsString(this IEnumerable<char> chars)
     {
-        return chars.HasAny() ? new string(chars.ToArray()) : string.Empty;
+        return chars.HasAny() ? new string([.. chars]) : string.Empty;
     }
 
     /// <summary>
@@ -142,7 +142,7 @@ internal static class Extensions
     {
         return source.HasAny()
             ? source.Select(x => x.ParseEnum(ignoreCase, defaultValue)).ToList()
-            : new List<TEnum>(0);
+            : [];
     }
 
     /// <summary>
@@ -161,14 +161,10 @@ internal static class Extensions
         Func<TSource, TKey> keySelector, Func<TSource, TValue> valueSelector, Func<TKey, TValue> defaultFactory)
         where TKey : notnull
     {
-        if (source == null)
-            throw new ArgumentNullException(nameof(source));
-        if (keySelector == null)
-            throw new ArgumentNullException(nameof(keySelector));
-        if (valueSelector == null)
-            throw new ArgumentNullException(nameof(valueSelector));
-        if (defaultFactory == null)
-            throw new ArgumentNullException(nameof(defaultFactory));
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(keySelector);
+        ArgumentNullException.ThrowIfNull(valueSelector);
+        ArgumentNullException.ThrowIfNull(defaultFactory);
 
         var dict = new DefaultDictionary<TKey, TValue>(defaultFactory);
         foreach (var item in source)
