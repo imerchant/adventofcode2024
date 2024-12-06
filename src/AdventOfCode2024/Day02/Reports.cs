@@ -19,22 +19,35 @@ public class Report
 {
     public List<int> Levels { get; }
     public bool IsSafe { get; }
+    public bool IsSafeWithDampener { get; }
 
     public Report(string input)
     {
         Levels = [.. input.SplitOn(' ').Select(int.Parse)];
-        IsSafe = GetIsSafe();
+        IsSafe = GetIsSafe(Levels);
+        IsSafeWithDampener = IsSafe || GetIsSafeWithDampener(Levels);
     }
 
-    private bool GetIsSafe()
+    private static bool GetIsSafeWithDampener(List<int> levels)
     {
-        var diff = Levels[0] - Levels[1];
+        for (var k = 0; k < levels.Count; ++k)
+        {
+            var withoutK = levels.Without(k);
+            if (GetIsSafe(withoutK))
+                return true;
+        }
+        return false;
+    }
+
+    private static bool GetIsSafe(List<int> levels)
+    {
+        var diff = levels[0] - levels[1];
         if (diff == 0)
             return false;
 
         var decreasing = diff > 0;
 
-        foreach (var (x, y) in Levels.Zip(Levels.Skip(1))) // pairwise, nice
+        foreach (var (x, y) in levels.Zip(levels.Skip(1))) // pairwise, nice
         {
             if (decreasing && x <= y) return false;
             if (!decreasing && x >= y) return false;
@@ -43,5 +56,15 @@ public class Report
         }
 
         return true;
+    }
+}
+
+internal static class Day02Extensions
+{
+    public static List<int> Without(this IEnumerable<int> ints, int index)
+    {
+        List<int> list = [..ints];
+        list.RemoveAt(index);
+        return list;
     }
 }

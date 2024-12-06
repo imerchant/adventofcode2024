@@ -5,10 +5,11 @@ namespace AdventOfCode2024.Tests;
 public class DayO2Solutions
 {
     [Fact]
-    public void Puzzle1_CountSafeReports()
+    public void Puzzle1And2_CountSafeReports_IncludingWithProblemDampener()
     {
         var reports = new Reports(Input.Day02);
         reports.Count(x => x.IsSafe).Should().Be(421);
+        reports.Count(x => x.IsSafeWithDampener).Should().Be(476);
     }
 
     public const string Example1 = @"7 6 4 2 1
@@ -23,5 +24,6 @@ public class DayO2Solutions
     {
         var reports = new Reports(Example1);
         reports.Count(x => x.IsSafe).Should().Be(2);
+        reports.Count(x => x.IsSafeWithDampener).Should().Be(4);
     }
 }

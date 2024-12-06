@@ -5,7 +5,7 @@ namespace AdventOfCode2024.Tests;
 public class Day01Solutions
 {
     [Fact]
-    public void Puzzle1_SumsDistanceDifferences()
+    public void Puzzle1And2_SumsDistanceDifferences_AndSimilarityScores()
     {
         var locations = new Locations(Input.Day01);
         locations.Distances.Should().Be(1666427);
